@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta property="og:title" content="Cuentas Claras · Kit Emprendedor Navidad">
+<meta property="og:description" content="Calcula tus precios, controla tu stock y descubre cuánto ganas realmente. $9.990.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Cuentas Claras</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Kit Emprendedor Navidad: calcula tus precios, controla tu stock y descubre cuánto ganas realmente.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: hoja de cálculo como mundo visual — cuadrícula tenue, celdas amarillas = lo que tú escribes, verde = lo que el kit calcula */
+:root{
+  --paper:#FBFCFA; --ink:#14251E; --muted:#56675F; --line:#DCE5DF;
+  --pine:#1F6F50; --pine-ink:#FFFFFF; --cell:#FFF2B3; --cell-ink:#1A2BD6; --soft:#EEF5F0; --warn:#B23A3A;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Figtree",ui-sans-serif,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0F1814; --ink:#E7EFEA; --muted:#9DB0A6; --line:#24352D;
+  --pine:#3FA67C; --pine-ink:#08130E; --cell:#4A4214; --cell-ink:#BFC8FF; --soft:#17251F; --warn:#E07A7A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0F1814; --ink:#E7EFEA; --muted:#9DB0A6; --line:#24352D;
+  --pine:#3FA67C; --pine-ink:#08130E; --cell:#4A4214; --cell-ink:#BFC8FF; --soft:#17251F; --warn:#E07A7A; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:100% 32px,96px 100%;background-attachment:fixed}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+section{padding-block:72px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.05;letter-spacing:-.02em}
+h1{font-size:clamp(2.4rem,6vw,4.3rem);font-weight:800}
+h2{font-size:clamp(1.8rem,4vw,2.7rem);font-weight:700}
+h3{font-size:1.25rem;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--pine);font-weight:700}
+.muted{color:var(--muted)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--pine);outline-offset:3px}
+
+/* barra superior */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:1.25rem}
+.logo i{display:grid;place-items:center;width:30px;height:30px;border-radius:6px;background:var(--pine);color:var(--pine-ink);font-style:normal;font-family:var(--mono);font-size:.85rem}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;text-decoration:none;
+  font:600 1rem var(--body);padding:14px 22px;border-radius:10px;background:var(--pine);color:var(--pine-ink);transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.btn.sm{padding:9px 16px;font-size:.92rem}
+
+/* hero */
+.hero{padding-block:56px 72px}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.hero .lede{font-size:1.2rem;max-width:34ch;margin-top:20px;color:var(--muted)}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+mark{background:var(--cell);color:inherit;padding:0 .15em;border-radius:3px}
+
+/* calculadora demo: la pieza protagonista */
+.sheet{background:var(--paper);border:1px solid var(--ink);border-radius:12px;box-shadow:8px 8px 0 var(--pine);overflow:hidden;min-width:0}
+.sheet-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:.8rem;color:var(--muted);background:var(--soft)}
+.sheet-bar b{color:var(--ink)}
+.rows{display:grid}
+.row{display:grid;grid-template-columns:40px 1fr 150px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.row>*{padding:10px 12px;display:flex;align-items:center}
+.row .n{justify-content:center;font-family:var(--mono);font-size:.75rem;color:var(--muted);background:var(--soft);border-right:1px solid var(--line)}
+.row label{font-size:.95rem}
+.row input{width:100%;border:0;background:var(--cell);color:var(--cell-ink);font:700 1rem var(--mono);padding:8px 10px;border-radius:4px;text-align:right}
+.row .out{justify-content:flex-end;font-family:var(--mono);font-weight:700}
+.row.total{background:var(--soft)}
+.row.total .out{font-size:1.5rem;color:var(--pine)}
+.sheet-note{padding:12px 14px;font-size:.85rem;color:var(--muted)}
+
+/* dolores */
+.pains{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px}
+.pain{padding:22px;border-left:3px solid var(--warn);background:var(--paper)}
+.pain .q{font-family:var(--display);font-weight:700;font-size:1.2rem;margin-bottom:8px}
+
+/* contenido del kit */
+.kit{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:36px}
+.tab{border:1px solid var(--line);border-radius:12px;background:var(--paper);overflow:hidden}
+.tab .head{display:flex;align-items:center;gap:10px;padding:12px 18px;background:var(--pine);color:var(--pine-ink);font:700 .9rem var(--mono)}
+.tab .body{padding:18px;display:grid;gap:8px}
+.tab ul{margin:0;padding-left:1.1em;display:grid;gap:4px}
+
+/* pasos */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px;counter-reset:s}
+.step{padding-top:16px;border-top:2px solid var(--ink)}
+.step::before{counter-increment:s;content:"Paso " counter(s);display:block;font:700 .78rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--pine);margin-bottom:8px}
+
+/* precios */
+.prices{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:36px;align-items:start}
+.price{border:1px solid var(--line);border-radius:14px;padding:28px;background:var(--paper);display:grid;gap:16px}
+.price.feat{border:2px solid var(--pine);box-shadow:8px 8px 0 var(--pine)}
+.price .tag{justify-self:start;font:700 .75rem var(--mono);text-transform:uppercase;letter-spacing:.08em;padding:4px 10px;border-radius:99px;background:var(--cell);color:var(--ink)}
+.amount{font-family:var(--display);font-weight:800;font-size:3rem;line-height:1;font-variant-numeric:tabular-nums}
+.amount small{font:500 1rem var(--body);color:var(--muted)}
+.price ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.price li{padding-left:26px;position:relative}
+.price li::before{content:"✓";position:absolute;left:0;color:var(--pine);font-weight:700}
+.price .btn{width:100%}
+.pay{font-size:.85rem;color:var(--muted);text-align:center}
+
+/* faq */
+.faq{display:grid;gap:12px;margin-top:32px;max-width:760px}
+details{border:1px solid var(--line);border-radius:10px;background:var(--paper);padding:16px 20px}
+summary{cursor:pointer;font-weight:600;font-size:1.05rem}
+details p{margin-top:10px;color:var(--muted)}
+
+.contact{display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between;border:1px solid var(--ink);border-radius:14px;padding:28px;background:var(--soft)}
+.contact .data{display:grid;gap:6px;font-family:var(--mono);font-size:.95rem}
+footer{padding-block:28px;border-top:1px solid var(--line);font-size:.85rem;color:var(--muted);background:var(--paper)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:12px 18px;border-radius:10px;font-size:.95rem;max-width:calc(100% - 32px)}
+
+@media (max-width:860px){
+  .hero .wrap,.prices,.kit{grid-template-columns:1fr}
+  .pains,.steps{grid-template-columns:1fr}
+  section{padding-block:56px}
+  .top .btn{display:none}
+}
+@media (max-width:420px){.row{grid-template-columns:32px 1fr 118px}.amount{font-size:2.5rem}}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}.btn:hover{transform:none}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="logo"><i>$=</i>Cuentas Claras</div>
+    <a class="btn sm" href="#precios">Quiero el kit</a>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Kit Emprendedor Navidad</p>
+      <h1 style="margin-top:14px">¿Cuánto ganas <mark>de verdad</mark> con cada venta?</h1>
+      <p class="lede">Planillas listas para calcular tus precios, controlar tu stock y ver tu ganancia real esta temporada navideña. Sin saber Excel.</p>
+      <div class="ctas">
+        <a class="btn" href="#precios">Comprar por $9.990</a>
+        <a class="btn ghost" href="#kit">Ver qué incluye</a>
+      </div>
+    </div>
+
+    <div class="sheet" aria-label="Calculadora de ejemplo">
+      <div class="sheet-bar">📄 <b>Calculadora</b> · prueba con tu producto</div>
+      <div class="rows">
+        <div class="row"><span class="n">1</span><label for="mat">Materiales por unidad</label><input id="mat" inputmode="numeric" value="2.800"></div>
+        <div class="row"><span class="n">2</span><label for="emp">Empaque</label><input id="emp" inputmode="numeric" value="900"></div>
+        <div class="row"><span class="n">3</span><label for="hrs">Minutos de trabajo</label><input id="hrs" inputmode="numeric" value="45"></div>
+        <div class="row"><span class="n">4</span><label>Costo real (con tu hora a $4.000)</label><span class="out" id="costo">$6.700</span></div>
+        <div class="row total"><span class="n">5</span><label><b>Deberías cobrar</b></label><span class="out" id="precio">$10.990</span></div>
+        <div class="row"><span class="n">6</span><label>Te queda de ganancia</label><span class="out" id="gan">$3.905</span></div>
+      </div>
+      <p class="sheet-note">Considera 3,5% de comisión del medio de pago y 35% de margen. En el kit ajustas todo a tu negocio.</p>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--soft)">
+  <div class="wrap">
+    <p class="eyebrow">¿Te suena?</p>
+    <h2 style="margin-top:10px;max-width:22ch">Vendes harto en diciembre y en enero no sabes dónde quedó la plata</h2>
+    <div class="pains">
+      <div class="pain"><p class="q">"Cobro lo que cobra la competencia"</p><p class="muted">Y no sabes si después de materiales, empaque, envío y comisión te queda algo. Muchas veces no.</p></div>
+      <div class="pain"><p class="q">"Se me acabó justo lo que más pedían"</p><p class="muted">El stock en un cuaderno o en la cabeza no aguanta la avalancha de pedidos de Navidad.</p></div>
+      <div class="pain"><p class="q">"¿Quién me pagó y quién no?"</p><p class="muted">Pedidos repartidos entre WhatsApp, Instagram y transferencias. Imposible saber cuánto ganaste en el mes.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="kit">
+  <div class="wrap">
+    <p class="eyebrow">Qué incluye</p>
+    <h2 style="margin-top:10px">Un archivo, cuatro hojas conectadas</h2>
+    <p class="muted" style="margin-top:12px;max-width:60ch">Escribes solo en las celdas amarillas. Todo lo demás se calcula solo y las hojas se hablan entre sí: un pedido descuenta stock y suma a tu resumen automáticamente.</p>
+    <div class="kit">
+      <div class="tab"><div class="head">▦ Calculadora</div><div class="body"><p>Tu precio de venta correcto para cada producto.</p><ul><li>Suma materiales, empaque, envío y tu tiempo</li><li>Descuenta la comisión de Mercado Pago o Webpay</li><li>Redondea a precios que venden ($X.990)</li></ul></div></div>
+      <div class="tab"><div class="head">▦ Stock</div><div class="body"><p>Sabes en todo momento cuánto te queda.</p><ul><li>Descuenta solo lo vendido</li><li>Te avisa en rojo cuándo reponer</li><li>Registra reposiciones</li></ul></div></div>
+      <div class="tab"><div class="head">▦ Pedidos</div><div class="body"><p>Todos tus pedidos en un solo lugar.</p><ul><li>Eliges el producto de una lista</li><li>Estado: pendiente, pagado, entregado</li><li>Ganancia por pedido calculada sola</li></ul></div></div>
+      <div class="tab"><div class="head">▦ Resumen</div><div class="body"><p>Tu negocio en una mirada.</p><ul><li>Ventas y ganancia real del mes</li><li>Ticket promedio y producto estrella</li><li>Gráfico mensual y pedidos por cobrar</li></ul></div></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--soft)">
+  <div class="wrap">
+    <p class="eyebrow">Cómo funciona</p>
+    <h2 style="margin-top:10px">Lo usas hoy mismo</h2>
+    <div class="steps">
+      <div class="step"><h3>Pagas</h3><p class="muted" style="margin-top:6px">Con tarjeta, débito o transferencia a través de Mercado Pago.</p></div>
+      <div class="step"><h3>Nos envías el comprobante</h3><p class="muted" style="margin-top:6px">Por WhatsApp o correo, y te mandamos el archivo en minutos. Funciona en Excel y en Google Sheets.</p></div>
+      <div class="step"><h3>Anotas tus productos</h3><p class="muted" style="margin-top:6px">En 15 minutos tienes tus precios calculados y tu stock al día.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="precios">
+  <div class="wrap">
+    <p class="eyebrow">Precio de lanzamiento</p>
+    <h2 style="margin-top:10px">Elige cómo lo quieres</h2>
+    <div class="prices">
+      <div class="price feat">
+        <span class="tag">El más elegido</span>
+        <h3>Kit Emprendedor Navidad</h3>
+        <p class="amount">$9.990 <small>pago único</small></p>
+        <ul><li>Las 4 hojas conectadas</li><li>Guía de uso en 3 pasos</li><li>Excel y Google Sheets</li><li>Tuyo para siempre, úsalo todo 2027</li></ul>
+        <a class="btn" href="#" data-pay="kit" id="buy-kit">Comprar el kit</a>
+        <p class="pay">Pago seguro con Mercado Pago · luego envíanos el comprobante por WhatsApp</p>
+      </div>
+      <div class="price">
+        <span class="tag">Te lo dejamos listo</span>
+        <h3>Kit + configuración</h3>
+        <p class="amount">$24.980 <small>pago único</small></p>
+        <ul><li>Todo lo del kit</li><li>Cargamos tus productos y costos por ti</li><li>Revisamos tus precios contigo</li><li>Entrega en 48 horas</li></ul>
+        <a class="btn ghost" href="#" data-pay="pro" id="buy-pro">Quiero que me lo configuren</a>
+        <p class="pay">Te contactamos por WhatsApp después del pago</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--soft)">
+  <div class="wrap">
+    <p class="eyebrow">Preguntas frecuentes</p>
+    <h2 style="margin-top:10px">Antes de comprar</h2>
+    <div class="faq">
+      <details><summary>No sé usar Excel. ¿Me sirve?</summary><p>Sí. Solo escribes en las celdas amarillas, como llenar un formulario. Todas las fórmulas ya están hechas.</p></details>
+      <details><summary>¿Funciona en el celular?</summary><p>Puedes abrirlo con Google Sheets en el celular para revisar y anotar pedidos. Para la configuración inicial recomendamos un computador.</p></details>
+      <details><summary>¿Cómo lo recibo?</summary><p>Después de pagar, envíanos el comprobante por WhatsApp o correo y te mandamos el archivo en minutos (de 9:00 a 23:00).</p></details>
+      <details><summary>Vendo servicios, no productos. ¿Sirve igual?</summary><p>Sí. En vez de materiales anotas lo que te cuesta cada servicio y el tiempo que te toma. La calculadora hace el resto.</p></details>
+      <details><summary>¿Y si no me sirve?</summary><p>Escríbenos por WhatsApp y te ayudamos a dejarlo funcionando con tus productos.</p></details>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="contact">
+      <div><h3>¿Dudas? Hablemos</h3><p class="muted" style="margin-top:6px">Respondemos el mismo día.</p></div>
+      <div class="data"><span id="c-wa">WhatsApp: +56 9 4252 5389</span><span id="c-mail">c.vildosolapavez@gmail.com</span></div>
+      <a class="btn" id="wa-btn" href="#">Escribir por WhatsApp</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">© 2026 Cuentas Claras · Herramientas simples para emprendedores en Chile</div></footer>
+<div class="toast" id="toast" hidden></div>
+<a class="wa-float" id="wa-float" href="https://wa.me/56942525389?text=Hola!%20Quiero%20saber%20m%C3%A1s%20del%20Kit%20Emprendedor%20Navidad" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.2Z"/></svg><span>¿Dudas? Escríbenos</span></a>
+<style>
+.wa-float{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;display:flex;align-items:center;gap:8px;background:#25D366;color:#0B2E17;font:700 .95rem var(--body);padding:12px 16px;border-radius:999px;text-decoration:none;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.wa-float:hover{transform:translateY(-2px)}
+@media (max-width:420px){.wa-float span{display:none}.wa-float{padding:14px}}
+</style>
+
+<script>
+// ===== CONFIGURACIÓN: reemplazar con los datos reales =====
+const CONFIG = {
+  pagoKit: "https://mpago.la/14zZQzP",          // link de pago Mercado Pago $9.990
+  pagoPro: "https://mpago.la/1zuu9FZ",          // link de pago Mercado Pago $24.980
+  whatsapp: "56942525389",         // ej: "56912345678" (sin + ni espacios)
+  email: "c.vildosolapavez@gmail.com"             // ej: "hola@cuentasclaras.cl"
+};
+
+const fmt = n => "$" + Math.round(n).toLocaleString("es-CL");
+const num = el => Number(String(el.value).replace(/\D/g, "")) || 0;
+const COM = 0.035, MARGEN = 0.35, HORA = 4000;
+
+function calc(){
+  const mat = num(document.getElementById("mat"));
+  const emp = num(document.getElementById("emp"));
+  const min = num(document.getElementById("hrs"));
+  const costo = mat + emp + (min / 60) * HORA;
+  const sug = costo / (1 - COM - MARGEN);
+  const precio = costo > 0 ? Math.ceil(sug / 1000) * 1000 - 10 : 0;
+  const gan = precio - precio * COM - costo;
+  document.getElementById("costo").textContent = fmt(costo);
+  document.getElementById("precio").textContent = fmt(precio);
+  document.getElementById("gan").textContent = fmt(gan);
+}
+["mat","emp","hrs"].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener("input",()=>{
+    const v=num(el); el.value = v ? v.toLocaleString("es-CL") : ""; calc();
+  });
+});
+calc();
+
+let t;
+function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.hidden=false;clearTimeout(t);t=setTimeout(()=>el.hidden=true,3200);}
+
+const links = {kit: CONFIG.pagoKit, pro: CONFIG.pagoPro};
+document.querySelectorAll("[data-pay]").forEach(a=>{
+  const url = links[a.dataset.pay];
+  if(url){ a.href=url; a.target="_blank"; a.rel="noopener"; }
+  else a.addEventListener("click",e=>{e.preventDefault();toast("Las ventas abren muy pronto. Escríbenos y te avisamos.");});
+});
+const wa = document.getElementById("wa-btn");
+if(CONFIG.whatsapp){
+  wa.href="https://wa.me/"+CONFIG.whatsapp+"?text="+encodeURIComponent("Hola! Quiero saber más del Kit Emprendedor Navidad");
+  wa.target="_blank"; wa.rel="noopener";
+  
+} else wa.addEventListener("click",e=>{e.preventDefault();toast("WhatsApp disponible muy pronto.");});
+if(CONFIG.email) document.getElementById("c-mail").textContent=CONFIG.email;
+</script>
+
+</body>
+</html>
